@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 # 1. Create new resource group for blob resources
 resource "azurerm_resource_group" "blob_rg" {
   name     = var.resource_group_name
