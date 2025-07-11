@@ -32,16 +32,16 @@ jobs:
           CONTAINER_NAME="container5579"
           LOCATION="eastus2"
 
-          echo " Checking Resource Group..."
+          echo "Checking Resource Group..."
           if az group show --name $RESOURCE_GROUP &> /dev/null; then
-            echo " Resource Group exists."
+            echo "Resource Group exists."
           else
             az group create --name $RESOURCE_GROUP --location $LOCATION
           fi
 
-          echo " Checking Storage Account..."
+          echo "Checking Storage Account..."
           if az storage account show --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GROUP &> /dev/null; then
-            echo " Storage Account exists."
+            echo "Storage Account exists."
           else
             az storage account create \
               --name $STORAGE_ACCOUNT \
@@ -50,18 +50,18 @@ jobs:
               --sku Standard_LRS
           fi
 
-          echo " Getting Storage Account Key..."
+          echo "Getting Storage Account Key..."
           ACCOUNT_KEY=$(az storage account keys list \
             --account-name $STORAGE_ACCOUNT \
             --resource-group $RESOURCE_GROUP \
             --query "[0].value" -o tsv)
 
-          echo " Checking Container..."
+          echo "Checking Container..."
           if az storage container show \
             --name $CONTAINER_NAME \
             --account-name $STORAGE_ACCOUNT \
             --account-key $ACCOUNT_KEY &> /dev/null; then
-            echo " Container exists."
+            echo "Container exists."
           else
             az storage container create \
               --name $CONTAINER_NAME \
@@ -77,13 +77,12 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      #  Inject Service Principal Credentials into tfvars
       - name: Inject SP credentials into tfvars
         run: |
-          echo "client_id       = \"${{ env.ARM_CLIENT_ID }}\"" >> environments/dev.tfvars
-          echo "client_secret   = \"${{ env.ARM_CLIENT_SECRET }}\"" >> environments/dev.tfvars
-          echo "tenant_id       = \"${{ env.ARM_TENANT_ID }}\"" >> environments/dev.tfvars
-          echo "subscription_id = \"${{ env.ARM_SUBSCRIPTION_ID }}\"" >> environments/dev.tfvars
+          sed -i "s|^client_id *=.*|client_id       = \"${{ env.ARM_CLIENT_ID }}\"|" environments/dev.tfvars
+          sed -i "s|^client_secret *=.*|client_secret   = \"${{ env.ARM_CLIENT_SECRET }}\"|" environments/dev.tfvars
+          sed -i "s|^tenant_id *=.*|tenant_id       = \"${{ env.ARM_TENANT_ID }}\"|" environments/dev.tfvars
+          sed -i "s|^subscription_id *=.*|subscription_id = \"${{ env.ARM_SUBSCRIPTION_ID }}\"|" environments/dev.tfvars
 
       - name: Terraform Plan
         run: terraform plan -var-file="environments/dev.tfvars" -out=tfplan
