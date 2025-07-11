@@ -28,8 +28,8 @@ jobs:
       - name: Ensure Azure Backend Storage Exists
         run: |
           RESOURCE_GROUP="rg_of_carbon"
-          STORAGE_ACCOUNT="storage_of_what"
-          CONTAINER_NAME="container_of_jain"
+          STORAGE_ACCOUNT="storage_of_88998898"
+          CONTAINER_NAME="container_of_55793"
           LOCATION="eastus2"
 
           echo " Checking Resource Group..."
