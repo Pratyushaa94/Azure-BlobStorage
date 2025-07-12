@@ -3,8 +3,3 @@ location              = "eastus"
 storage_account_name  = "pratyushahiih"
 container_name        = "blobcontainer01"
 
-# Leave these empty for local (used only in GitHub Actions)
-client_id       = ""
-client_secret   = ""
-tenant_id       = ""
-subscription_id = ""

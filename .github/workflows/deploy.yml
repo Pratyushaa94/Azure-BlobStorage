@@ -25,6 +25,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Export ARM environment variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}" >> $GITHUB_ENV
+
       - name: Ensure Azure Backend Storage Exists
         run: |
           RESOURCE_GROUP="rg-of-carbon"
@@ -77,15 +84,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Inject SP credentials into tfvars
-        run: |
-          sed -i "s|^client_id *=.*|client_id       = \"${{ env.ARM_CLIENT_ID }}\"|" environments/dev.tfvars
-          sed -i "s|^client_secret *=.*|client_secret   = \"${{ env.ARM_CLIENT_SECRET }}\"|" environments/dev.tfvars
-          sed -i "s|^tenant_id *=.*|tenant_id       = \"${{ env.ARM_TENANT_ID }}\"|" environments/dev.tfvars
-          sed -i "s|^subscription_id *=.*|subscription_id = \"${{ env.ARM_SUBSCRIPTION_ID }}\"|" environments/dev.tfvars
-
       - name: Terraform Plan
-        run: terraform plan -var-file="environments/dev.tfvars" -out=tfplan
+        run: terraform plan -out=tfplan
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
@@ -132,6 +132,13 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Export ARM environment variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
