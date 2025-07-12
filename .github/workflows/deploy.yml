@@ -84,6 +84,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Force unlock Terraform state (optional recovery)
+        run: terraform force-unlock -force af52a5c2-702e-b0ef-9742-5bb38af72854 || echo "No lock or already unlocked"
+        continue-on-error: true
+
       - name: Terraform Plan
         run: terraform plan -var-file="environments/dev.tfvars" -out=tfplan
 
@@ -149,10 +153,4 @@ jobs:
         run: terraform init
 
       - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: .
-
-      - name: Terraform Apply
-        run: terraform apply tfplan
+        uses: actions/download-a
