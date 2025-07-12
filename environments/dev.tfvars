@@ -1,5 +1,5 @@
-resource_group_name   = "blob-rg"                #  New RG for blob resources
+resource_group_name   = "blob-rtytg"                #  New RG for blob resources
 location              = "eastus"
-storage_account_name  = "pratyushahiih"
-container_name        = "blobcontainer01"
+storage_account_name  = "pratyushahiiwhyyyyyyh"
+container_name        = "blobcontainehiiiiir01"
 
